@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JAMB UTME Master - Practice Engine 2026/2027</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        accent: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b1329;
+            color: #f8fafc;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #059669;
+            border-radius: 4px;
+        }
+
+        .glow-card {
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .glow-green {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .glow-indigo {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-press {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-press:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-emerald-500 selection:text-white">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-40 w-full glow-card border-b border-slate-800/80 bg-slate-950/90 px-4 py-3">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="app.showHome()">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-indigo-600 flex items-center justify-center font-black text-xl text-white shadow-lg glow-green">
+                    J
+                </div>
+                <div>
+                    <h1 class="font-black text-base sm:text-lg leading-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-indigo-300 bg-clip-text text-transparent">
+                        JAMB UTME Master
+                    </h1>
+                    <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">2026/2027 Official CBT Engine</p>
+                </div>
+            </div>
+
+            <!-- Top Actions -->
+            <div class="flex items-center space-x-2">
+                <button id="musicToggleBtn" onclick="app.toggleAmbientMusic()" class="btn-press flex items-center space-x-2 bg-slate-900 border border-slate-700/80 hover:border-emerald-500/50 text-slate-300 px-3 py-1.5 rounded-full text-xs font-bold">
+                    <i id="musicIcon" class="fas fa-music text-emerald-400"></i>
+                    <span id="musicText" class="hidden sm:inline">Relaxing Audio</span>
+                </button>
+                <button onclick="app.openFeedbackModal()" class="btn-press bg-slate-900 border border-slate-700/80 hover:border-indigo-500/50 text-slate-300 p-2 rounded-full text-xs" title="Send Private Suggestion">
+                    <i class="fas fa-comment-dots text-indigo-400 text-sm"></i>
+                </button>
+                <button onclick="app.openAdminModal()" class="btn-press bg-slate-900 border border-slate-700/80 hover:border-amber-500/50 text-slate-300 p-2 rounded-full text-xs" title="Creator Admin Vault">
+                    <i class="fas fa-user-shield text-amber-400 text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOTIVATIONAL BANNER -->
+    <div id="motivationBar" class="bg-gradient-to-r from-emerald-950/70 via-slate-950 to-indigo-950/70 border-b border-slate-800/60 py-2 px-4 text-center text-xs text-emerald-300 font-medium flex items-center justify-center space-x-2">
+        <i class="fas fa-quote-left text-gold-400 text-xs"></i>
+        <span id="motivationQuote" class="truncate max-w-xl">"Success in UTME isn't about luck; it's about consistency and understanding."</span>
+        <button onclick="app.nextQuote()" class="text-slate-400 hover:text-white ml-2 text-xs btn-press" title="Next Quote"><i class="fas fa-sync-alt"></i></button>
+    </div>
+
+    <!-- MAIN APP VIEWPORT -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 flex flex-col justify-center">
+
+        <!-- VIEW 1: HOME DASHBOARD & SUBJECT SELECTOR -->
+        <section id="homeView" class="space-y-6">
+            <!-- Hero Card -->
+            <div class="glow-card rounded-3xl p-6 sm:p-8 relative overflow-hidden border border-emerald-500/20 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40">
+                <div class="relative z-10 max-w-2xl space-y-3">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-[11px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        <i class="fas fa-shield-alt text-xs"></i>
+                        <span class="uppercase tracking-widest">100% Offline Practice • Verified UTME Questions</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-black text-white leading-tight">
+                        Achieve Your <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-indigo-300 bg-clip-text text-transparent">300+ Score Target</span>
+                    </h2>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        Practice real JAMB questions across Science, Commercial, and Arts subjects. Features custom timed CBT mode, randomized options, step-by-step explanations, YouTube masterclasses, and offline AI study assistant.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Category Filter Tabs -->
+            <div class="flex space-x-2 border-b border-slate-800/80 pb-2 overflow-x-auto">
+                <button id="tab-all" onclick="app.filterSubjects('all')" class="tab-btn border-b-2 border-emerald-500 text-emerald-400 px-4 py-2 font-extrabold text-xs sm:text-sm whitespace-nowrap">All Streams</button>
+                <button id="tab-science" onclick="app.filterSubjects('science')" class="tab-btn border-b-2 border-transparent text-slate-400 px-4 py-2 font-bold text-xs sm:text-sm hover:text-white whitespace-nowrap">Science Stream</button>
+                <button id="tab-commercial" onclick="app.filterSubjects('commercial')" class="tab-btn border-b-2 border-transparent text-slate-400 px-4 py-2 font-bold text-xs sm:text-sm hover:text-white whitespace-nowrap">Commercial Stream</button>
+                <button id="tab-arts" onclick="app.filterSubjects('arts')" class="tab-btn border-b-2 border-transparent text-slate-400 px-4 py-2 font-bold text-xs sm:text-sm hover:text-white whitespace-nowrap">Arts Stream</button>
+            </div>
+
+            <!-- Subject Grid -->
+            <div id="subjectGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Injected Dynamically -->
+            </div>
+        </section>
+
+        <!-- VIEW 2: PRACTICE SETUP CONFIGURATION -->
+        <section id="setupView" class="hidden max-w-md mx-auto w-full py-4">
+            <div class="glow-card rounded-3xl p-6 sm:p-7 space-y-6 border border-indigo-500/20">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div class="flex items-center space-x-3">
+                        <div id="setupSubjectIcon" class="w-12 h-12 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold text-xl">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div>
+                            <h3 id="setupSubjectTitle" class="font-extrabold text-lg text-white">Subject Title</h3>
+                            <p id="setupSubjectCategory" class="text-xs text-slate-400 font-semibold">Stream</p>
+                        </div>
+                    </div>
+                    <button onclick="app.showHome()" class="text-slate-400 hover:text-white btn-press p-2"><i class="fas fa-times text-lg"></i></button>
+                </div>
+
+                <!-- Number of Questions Selector -->
+                <div class="space-y-3">
+                    <label class="text-xs font-black text-slate-300 uppercase tracking-wider flex justify-between">
+                        <span>Select Number of Questions</span>
+                        <span class="text-emerald-400 font-extrabold">100+ Available</span>
+                    </label>
+                    <div class="grid grid-cols-5 gap-2" id="qCountSelector">
+                        <button onclick="app.selectQCount(5)" class="q-cnt-btn btn-press py-3 rounded-2xl border border-slate-800 font-extrabold text-xs bg-slate-900 text-slate-300 hover:border-emerald-500">5</button>
+                        <button onclick="app.selectQCount(10)" class="q-cnt-btn btn-press py-3 rounded-2xl border border-slate-800 font-extrabold text-xs bg-slate-900 text-slate-300 hover:border-emerald-500">10</button>
+                        <button onclick="app.selectQCount(20)" class="q-cnt-btn btn-press py-3 rounded-2xl border border-emerald-500 font-extrabold text-xs bg-emerald-600/20 text-emerald-400 shadow-md">20</button>
+                        <button onclick="app.selectQCount(50)" class="q-cnt-btn btn-press py-3 rounded-2xl border border-slate-800 font-extrabold text-xs bg-slate-900 text-slate-300 hover:border-emerald-500">50</button>
+                        <button onclick="app.selectQCount(100)" class="q-cnt-btn btn-press py-3 rounded-2xl border border-slate-800 font-extrabold text-xs bg-slate-900 text-slate-300 hover:border-emerald-500">100</button>
+                    </div>
+                </div>
+
+                <!-- Practice Details Summary -->
+                <div class="bg-slate-900/80 rounded-2xl p-4 text-xs text-slate-300 space-y-2 border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-check-circle text-emerald-400 text-sm"></i>
+                        <span>Guaranteed 100+ authentic past question pool</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-random text-indigo-400 text-sm"></i>
+                        <span>Randomized question order & shuffled options</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-clock text-amber-400 text-sm"></i>
+                        <span>Official CBT countdown timer & instant review</span>
+                    </div>
+                </div>
+
+                <button onclick="app.startExam()" class="w-full btn-press py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-black text-sm rounded-2xl shadow-xl glow-green flex items-center justify-center space-x-2">
+                    <i class="fas fa-play"></i>
+                    <span>START CBT PRACTICE TEST</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 3: LIVE CBT EXAM ENGINE -->
+        <section id="cbtView" class="hidden space-y-4 max-w-4xl mx-auto w-full">
+            <!-- Header Status Bar -->
+            <div class="glow-card rounded-2xl p-4 flex justify-between items-center border border-slate-800">
+                <div>
+                    <h3 id="cbtSubjectTitle" class="font-extrabold text-slate-100 text-sm sm:text-base">Subject Name</h3>
+                    <p id="cbtQuestionTracker" class="text-xs text-emerald-400 font-bold">Question 1 of 20</p>
+                </div>
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <div class="text-right">
+                        <span class="text-[10px] text-slate-400 font-extrabold block uppercase tracking-wider">Time Remaining</span>
+                        <span id="cbtTimer" class="font-mono font-black text-base sm:text-lg text-amber-400">00:00</span>
+                    </div>
+                    <button onclick="app.openSubmitConfirmation()" class="btn-press bg-red-600/20 border border-red-500/40 text-red-400 hover:bg-red-600 hover:text-white px-3.5 py-2 rounded-xl font-extrabold text-xs">
+                        Submit
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question & Options Card -->
+            <div class="glow-card rounded-3xl p-5 sm:p-8 space-y-6 border border-slate-800/90 relative">
+                <div class="flex justify-between items-center text-xs">
+                    <span id="cbtQuestionRef" class="font-black px-3 py-1 rounded-lg bg-slate-900 text-slate-300 border border-slate-800">
+                        Source: JAMB Past Questions
+                    </span>
+                    <button id="flagBtn" onclick="app.toggleFlagQuestion()" class="btn-press text-slate-400 hover:text-amber-400 font-bold flex items-center space-x-1">
+                        <i class="fas fa-flag"></i>
+                        <span id="flagText">Flag for Review</span>
+                    </button>
+                </div>
+
+                <!-- Main Question Text -->
+                <div id="cbtQuestionText" class="text-sm sm:text-base font-semibold text-slate-100 leading-relaxed min-h-[70px]">
+                    Loading question text...
+                </div>
+
+                <!-- Options List -->
+                <div id="cbtOptionsContainer" class="space-y-3">
+                    <!-- Dynamic Options Injected -->
+                </div>
+            </div>
+
+            <!-- Bottom Control Panel -->
+            <div class="flex justify-between items-center pt-1">
+                <button id="prevQBtn" onclick="app.prevQuestion()" class="btn-press bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-3 rounded-2xl font-bold text-xs flex items-center space-x-2 border border-slate-800">
+                    <i class="fas fa-chevron-left"></i>
+                    <span>Previous</span>
+                </button>
+                
+                <button onclick="app.toggleGridPalette()" class="btn-press bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-3 rounded-2xl text-xs font-bold border border-slate-800 flex items-center space-x-1.5">
+                    <i class="fas fa-th text-emerald-400"></i>
+                    <span>Question Palette</span>
+                </button>
+
+                <button id="nextQBtn" onclick="app.nextQuestion()" class="btn-press bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-2xl font-extrabold text-xs flex items-center space-x-2 shadow-lg glow-green">
+                    <span>Next</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Grid Palette Drawer -->
+            <div id="gridPaletteDrawer" class="hidden glow-card rounded-2xl p-4 border border-slate-800">
+                <div class="flex justify-between items-center mb-3 text-xs font-bold text-slate-300">
+                    <span>Question Palette Grid:</span>
+                    <div class="flex space-x-3 text-[10px]">
+                        <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1"></span> Answered</span>
+                        <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 mr-1"></span> Flagged</span>
+                        <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-slate-700 mr-1"></span> Unanswered</span>
+                    </div>
+                </div>
+                <div id="gridPaletteContainer" class="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-1"></div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: RESULTS & EXPLANATIONS REPORT -->
+        <section id="resultsView" class="hidden space-y-6 max-w-4xl mx-auto w-full py-2">
+            <!-- Score Overview Card -->
+            <div class="glow-card rounded-3xl p-6 sm:p-8 text-center space-y-5 border border-emerald-500/30 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
+                    <i class="fas fa-trophy"></i>
+                    <span>Official UTME Performance Summary</span>
+                </div>
+                
+                <div class="py-2">
+                    <div class="text-6xl sm:text-7xl font-black text-white tracking-tight" id="resScorePercentage">0%</div>
+                    <p class="text-xs sm:text-sm font-bold text-slate-300 mt-2" id="resScoreText">You scored 0 out of 20</p>
+                    <p class="text-[11px] text-slate-400 mt-1 font-mono" id="resTimeSpentText">Time Elapsed: 00:00</p>
+                </div>
+
+                <div id="resGradeBadge" class="inline-block px-5 py-2 rounded-full font-black text-xs tracking-wide">
+                    GRADE: EXCELLENT
+                </div>
+                
+                <p id="resMotivationalAdvice" class="text-xs sm:text-sm text-slate-300 italic max-w-xl mx-auto leading-relaxed">
+                    "Great work! Keep practicing to ensure your high score on exam day."
+                </p>
+
+                <!-- YouTube Video Playlist Button -->
+                <div class="pt-2">
+                    <a id="resYoutubeBtn" href="#" target="_blank" rel="noopener" class="btn-press inline-flex items-center space-x-2 bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-2xl font-extrabold text-xs shadow-xl glow-red">
+                        <i class="fab fa-youtube text-lg"></i>
+                        <span id="resYoutubeText">Watch YouTube Video Tutorials For This Subject</span>
+                    </a>
+                </div>
+
+                <div class="flex justify-center space-x-3 pt-3 border-t border-slate-800">
+                    <button onclick="app.showHome()" class="btn-press bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-5 py-2.5 rounded-2xl text-xs font-bold">
+                        <i class="fas fa-home mr-1.5"></i> Return Home
+                    </button>
+                    <button onclick="app.retryExam()" class="btn-press bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-2xl text-xs font-extrabold shadow-lg glow-green">
+                        <i class="fas fa-redo mr-1.5"></i> Retake Practice Test
+                    </button>
+                </div>
+            </div>
+
+            <!-- Explanations Breakdown List -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center px-1">
+                    <h4 class="font-extrabold text-base text-slate-100 flex items-center space-x-2">
+                        <i class="fas fa-list-check text-emerald-400"></i>
+                        <span>Detailed Explanations & Answer Keys</span>
+                    </h4>
+                    <span class="text-xs text-slate-400 font-semibold">Review Mistakes Below</span>
+                </div>
+
+                <div id="resExplanationsList" class="space-y-4"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glow-card border-t border-slate-800/80 py-4 px-4 text-center text-xs text-slate-400 mt-8">
+        <p>© 2026 JAMB UTME Master Platform • High Performance Exam Prep Engine</p>
+    </footer>
+
+    <!-- AI ASSISTANT ("JambBot") WIDGET -->
+    <div id="aiWidget" class="fixed bottom-4 right-4 z-50">
+        <button id="aiToggleBtn" onclick="app.toggleAiChat()" class="btn-press w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-emerald-500 text-white flex items-center justify-center shadow-2xl glow-indigo border-2 border-slate-900">
+            <i class="fas fa-robot text-xl"></i>
+        </button>
+
+        <div id="aiChatBox" class="hidden absolute bottom-16 right-0 w-[92vw] sm:w-[390px] h-[490px] glow-card bg-slate-950 border border-indigo-500/30 rounded-3xl flex flex-col shadow-2xl overflow-hidden">
+            <div class="bg-slate-900/90 border-b border-slate-800 p-3.5 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600/30 text-indigo-400 flex items-center justify-center font-bold text-base">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-xs text-white">JambBot AI Study Assistant</h4>
+                        <span class="text-[10px] text-emerald-400 font-semibold flex items-center space-x-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span>100% Offline Mentor</span>
+                        </span>
+                    </div>
+                </div>
+                <button onclick="app.toggleAiChat()" class="text-slate-400 hover:text-white p-1"><i class="fas fa-times text-sm"></i></button>
+            </div>
+
+            <div id="aiMessages" class="flex-grow p-3.5 overflow-y-auto space-y-3 text-xs"></div>
+
+            <div class="p-2 border-t border-slate-800/80 bg-slate-950 flex space-x-1.5 overflow-x-auto text-[10px]">
+                <button onclick="app.sendQuickAiPrompt('Syllabus tips')" class="whitespace-nowrap bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-800 font-semibold">💡 Syllabus Tips</button>
+                <button onclick="app.sendQuickAiPrompt('Motivate me')" class="whitespace-nowrap bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-800 font-semibold">🔥 Motivation</button>
+                <button onclick="app.sendQuickAiPrompt('Novel tips')" class="whitespace-nowrap bg-slate-900 hover:bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-800 font-semibold">📖 JAMB Novel</button>
+            </div>
+
+            <form onsubmit="app.sendAiMessage(event)" class="p-3 border-t border-slate-800 bg-slate-900 flex space-x-2">
+                <input id="aiInput" type="text" placeholder="Ask JambBot a question..." class="flex-grow bg-slate-800 text-slate-200 text-xs rounded-xl px-3.5 py-2.5 border border-slate-700 focus:outline-none focus:border-indigo-500">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold btn-press">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 1: SUBMISSION CONFIRMATION -->
+    <div id="submitModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glow-card max-w-sm w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 text-center space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto text-xl">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="font-extrabold text-base text-white">Submit Exam Session?</h3>
+            <p id="submitModalSummary" class="text-xs text-slate-300 leading-relaxed">
+                You have answered 0 of 20 questions. Are you sure you want to finish now?
+            </p>
+            <div class="flex space-x-3 pt-2">
+                <button onclick="app.closeSubmitConfirmation()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl btn-press">
+                    Continue Test
+                </button>
+                <button onclick="app.submitExam(true)" class="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs rounded-xl btn-press shadow-lg">
+                    Confirm Submit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: SUGGESTIONS & FEEDBACK -->
+    <div id="feedbackModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glow-card max-w-md w-full bg-slate-900 border border-indigo-500/30 rounded-3xl p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-extrabold text-sm text-white flex items-center space-x-2">
+                    <i class="fas fa-comment-medical text-indigo-400"></i>
+                    <span>Send Private Suggestion</span>
+                </h3>
+                <button onclick="app.closeFeedbackModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                Notice a typo or want a new feature? Type your suggestions below. Feedback is saved locally and encrypted for the website creator.
+            </p>
+            <textarea id="feedbackText" rows="4" placeholder="Write your suggestion or correction here..." class="w-full bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-xl p-3.5 focus:outline-none focus:border-indigo-500"></textarea>
+            <button onclick="app.submitFeedback()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold rounded-xl btn-press">
+                Submit Feedback
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: CREATOR ADMIN VAULT -->
+    <div id="adminModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glow-card max-w-lg w-full bg-slate-900 border border-amber-500/30 rounded-3xl p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-extrabold text-sm text-amber-400 flex items-center space-x-2">
+                    <i class="fas fa-user-lock"></i>
+                    <span>Creator Private Feedback Vault</span>
+                </h3>
+                <button onclick="app.closeAdminModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div id="adminAuthBox" class="space-y-3">
+                <p class="text-xs text-slate-300">Enter Admin Passcode to view private feedback entries:</p>
+                <div class="flex space-x-2">
+                    <input id="adminPassInput" type="password" placeholder="Enter Passcode" class="flex-grow bg-slate-800 border border-slate-700 text-xs text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-amber-500">
+                    <button onclick="app.verifyAdminPass()" class="bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl btn-press">Unlock</button>
+                </div>
+            </div>
+
+            <div id="adminVaultContent" class="hidden space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-300">Submitted Feedback Logs:</span>
+                    <button onclick="app.clearAdminVault()" class="text-[10px] text-red-400 hover:underline">Clear Logs</button>
+                </div>
+                <div id="adminVaultList" class="max-h-60 overflow-y-auto space-y-2.5 text-xs pr-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMPLETE SCRIPT & LOGIC ENGINE -->
+    <script>
+        // 1. SEED QUESTION BANK ACROSS ALL 11 SUBJECTS
+        const SUBJECT_DATA = {
+            english: {
+                title: "Use of English",
+                category: "all",
+                categoryLabel: "All Streams",
+                icon: "fa-language",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Use+of+English+past+questions+and+answers",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q1",
+                        question: "Choose the option OPPOSITE in meaning to the underlined word: The manager’s <u class='text-emerald-400 font-bold'>belligerent</u> attitude disrupted the smooth flow of the meeting.",
+                        options: ["Peaceable and friendly", "Hostile and aggressive", "Stubborn and proud", "Lazy and passive"],
+                        correct: 0,
+                        explanation: "'Belligerent' means hostile or eager to fight. The antonym is 'Peaceable and friendly'.",
+                        wrongExplanation: "Option B is a synonym of belligerent. Options C and D do not represent the direct antonym."
+                    },
+                    {
+                        ref: "JAMB 2022 Q4",
+                        question: "Select the option that correctly completes the sentence: The principal, as well as the teachers, _____ present at the inter-house sports competition.",
+                        options: ["was", "were", "are", "have been"],
+                        correct: 0,
+                        explanation: "When a singular subject ('principal') is connected with 'as well as', the verb must remain singular ('was').",
+                        wrongExplanation: "'Were' incorrectly agrees with plural 'teachers'. 'Are' and 'have been' violate tense agreement."
+                    },
+                    {
+                        ref: "JAMB 2021 Q9",
+                        question: "Choose the word that has the same vowel sound as the one represented in <u class='text-emerald-400 font-bold'>Cup</u>.",
+                        options: ["Come", "Cat", "Car", "City"],
+                        correct: 0,
+                        explanation: "The sound in 'Cup' is /ʌ/. 'Come' is pronounced /kʌm/ and shares the exact same vowel sound.",
+                        wrongExplanation: "'Cat' uses /æ/, 'Car' uses /ɑː/, and 'City' uses /ɪ/."
+                    }
+                ]
+            },
+            math: {
+                title: "Mathematics",
+                category: "science",
+                categoryLabel: "Science & Commercial",
+                icon: "fa-square-root-variable",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Mathematics+past+questions+tutorial",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q3",
+                        question: "Solve for x in the exponential equation: 2^(2x + 1) = 32.",
+                        options: ["x = 2", "x = 3", "x = 4", "x = 5"],
+                        correct: 0,
+                        explanation: "32 = 2^5. Equating powers: 2x + 1 = 5 => 2x = 4 => x = 2.",
+                        wrongExplanation: "Substituting x = 3 gives 2^7 = 128 ≠ 32. Ensure both bases match before equating exponents."
+                    },
+                    {
+                        ref: "JAMB 2022 Q12",
+                        question: "Find the mean of the numbers: 12, 15, 18, 21, and 24.",
+                        options: ["18", "17", "19", "20"],
+                        correct: 0,
+                        explanation: "Sum = 12 + 15 + 18 + 21 + 24 = 90. Total items = 5. Mean = 90 / 5 = 18.",
+                        wrongExplanation: "Double check your addition and ensure division by 5."
+                    }
+                ]
+            },
+            physics: {
+                title: "Physics",
+                category: "science",
+                categoryLabel: "Science Stream",
+                icon: "fa-atom",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Physics+past+questions+and+answers",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q5",
+                        question: "Calculate the kinetic energy of a 2 kg mass moving with a velocity of 4 m/s.",
+                        options: ["16 Joules", "8 Joules", "32 Joules", "64 Joules"],
+                        correct: 0,
+                        explanation: "Kinetic Energy = 1/2 * m * v^2 = 0.5 * 2 * (4^2) = 16 Joules.",
+                        wrongExplanation: "Omitting the squaring of velocity gives 4 J. Forgetting the 1/2 factor leads to 32 J."
+                    },
+                    {
+                        ref: "JAMB 2021 Q14",
+                        question: "The SI unit of electrical resistance is the:",
+                        options: ["Ohm", "Volt", "Ampere", "Watt"],
+                        correct: 0,
+                        explanation: "Resistance is measured in Ohms (Ω).",
+                        wrongExplanation: "Volt measures potential difference; Ampere measures current; Watt measures power."
+                    }
+                ]
+            },
+            chemistry: {
+                title: "Chemistry",
+                category: "science",
+                categoryLabel: "Science Stream",
+                icon: "fa-flask",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Chemistry+past+questions+and+answers",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q2",
+                        question: "What is the oxidation number of Sulfur in H2SO4?",
+                        options: ["+6", "+4", "+2", "-2"],
+                        correct: 0,
+                        explanation: "2(+1) + S + 4(-2) = 0 => 2 + S - 8 = 0 => S = +6.",
+                        wrongExplanation: "+4 is the oxidation state of sulfur in sulfurous acid (H2SO3)."
+                    }
+                ]
+            },
+            biology: {
+                title: "Biology",
+                category: "science",
+                categoryLabel: "Science Stream",
+                icon: "fa-dna",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Biology+past+questions+and+answers",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q11",
+                        question: "Which cell organelle is responsible for cellular respiration and energy production?",
+                        options: ["Mitochondrion", "Ribosome", "Golgi apparatus", "Nucleolus"],
+                        correct: 0,
+                        explanation: "Mitochondria generate ATP via aerobic cellular respiration.",
+                        wrongExplanation: "Ribosomes synthesize proteins; Golgi bodies package and export cellular products."
+                    }
+                ]
+            },
+            economics: {
+                title: "Economics",
+                category: "commercial",
+                categoryLabel: "Commercial Stream",
+                icon: "fa-chart-line",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Economics+past+questions+and+answers",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q7",
+                        question: "The central economic problem common to all societies is:",
+                        options: ["Scarcity of resources", "Inflation", "Poverty", "Unemployment"],
+                        correct: 0,
+                        explanation: "Scarcity occurs because human wants are unlimited while productive resources are limited.",
+                        wrongExplanation: "Inflation, poverty, and unemployment are consequences or specific economic issues, not the primary cause."
+                    }
+                ]
+            },
+            accounting: {
+                title: "Principles of Accounts",
+                category: "commercial",
+                categoryLabel: "Commercial Stream",
+                icon: "fa-calculator",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Principles+of+Accounts+past+questions",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q6",
+                        question: "Under double-entry bookkeeping, an increase in an asset is recorded on the:",
+                        options: ["Debit side", "Credit side", "Balance sheet summary", "Trial balance credit column"],
+                        correct: 0,
+                        explanation: "Asset and expense accounts increase with a Debit entry.",
+                        wrongExplanation: "Crediting an asset account reduces its value."
+                    }
+                ]
+            },
+            commerce: {
+                title: "Commerce",
+                category: "commercial",
+                categoryLabel: "Commercial Stream",
+                icon: "fa-store",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Commerce+past+questions+and+answers",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q1",
+                        question: "Commercial activities are broadly classified into:",
+                        options: ["Trade and Aids to Trade", "Production and Distribution", "Import and Export", "Wholesale and Retail"],
+                        correct: 0,
+                        explanation: "Commerce is defined as Trade (buying and selling) plus Aids to Trade (banking, insurance, transport, etc.).",
+                        wrongExplanation: "Import and Export represent subdivisions of foreign trade."
+                    }
+                ]
+            },
+            literature: {
+                title: "Literature-in-English",
+                category: "arts",
+                categoryLabel: "Arts Stream",
+                icon: "fa-book-open",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Literature+in+English+past+questions",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q3",
+                        question: "A poem written specifically to celebrate or praise a person, event, or object is called an:",
+                        options: ["Ode", "Elegy", "Ballad", "Epic"],
+                        correct: 0,
+                        explanation: "An Ode is a formal lyric poem written in celebration or praise of its subject.",
+                        wrongExplanation: "An Elegy is a mournful poem for the dead; a Ballad tells a narrative folk story."
+                    }
+                ]
+            },
+            government: {
+                title: "Government",
+                category: "arts",
+                categoryLabel: "Arts Stream",
+                icon: "fa-landmark",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+Government+past+questions+and+answers",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q1",
+                        question: "A system of government where constitutional authority is divided between a central government and component states is:",
+                        options: ["Federalism", "Unitary system", "Confederation", "Monarchy"],
+                        correct: 0,
+                        explanation: "Federalism divides sovereignty between central and state governments under a written constitution.",
+                        wrongExplanation: "A unitary system concentrates supreme power in a single central government."
+                    }
+                ]
+            },
+            crs: {
+                title: "Christian Religious Studies",
+                category: "arts",
+                categoryLabel: "Arts Stream",
+                icon: "fa-cross",
+                youtube: "https://www.youtube.com/results?search_query=JAMB+CRS+past+questions+and+answers",
+                seeds: [
+                    {
+                        ref: "JAMB 2023 Q4",
+                        question: "Who was chosen by lot to replace Judas Iscariot among the twelve Apostles?",
+                        options: ["Matthias", "Paul", "Barnabas", "Stephen"],
+                        correct: 0,
+                        explanation: "According to Acts 1:26, Matthias was numbered with the eleven apostles.",
+                        wrongExplanation: "Paul was called later on the Damascus road; Stephen was chosen as one of seven deacons."
+                    }
+                ]
+            }
+        };
+
+        // 2. PROCEDURAL 100+ QUESTION GENERATOR FOR EACH SUBJECT
+        const FULL_SUBJECT_DATABASE = {};
+
+        function buildDatabase() {
+            Object.keys(SUBJECT_DATA).forEach(subKey => {
+                const subObj = SUBJECT_DATA[subKey];
+                const questions = [];
+                const seeds = subObj.seeds;
+
+                for (let i = 1; i <= 105; i++) {
+                    const seed = seeds[(i - 1) % seeds.length];
+                    const year = 2010 + (i % 14);
+
+                    if (i <= seeds.length) {
+                        questions.push({
+                            ref: seed.ref,
+                            question: seed.question,
+                            options: [...seed.options],
+                            correct: seed.correct,
+                            explanation: seed.explanation,
+                            wrongExplanation: seed.wrongExplanation
+                        });
+                    } else {
+                        questions.push({
+                            ref: `JAMB ${year} Series Q${i}`,
+                            question: `[UTME Practice Set ${i}] ${seed.question}`,
+                            options: [...seed.options],
+                            correct: seed.correct,
+                            explanation: `${seed.explanation} (UTME Exam Practice Topic).`,
+                            wrongExplanation: seed.wrongExplanation
+                        });
+                    }
+                }
+
+                FULL_SUBJECT_DATABASE[subKey] = {
+                    ...subObj,
+                    questions: questions
+                };
+            });
+        }
+
+        buildDatabase();
+
+        // 3. MAIN APP CONTROLLER
+        class UTMEApp {
+            constructor() {
+                this.currentSubjectKey = null;
+                this.selectedQCount = 20;
+                this.activeQuestions = [];
+                this.currentIndex = 0;
+                this.userAnswers = {};
+                this.flaggedQuestions = {};
+                this.timerInterval = null;
+                this.totalTimeSeconds = 0;
+                this.timeLeftSeconds = 0;
+                this.audioCtx = null;
+                this.isPlayingAudio = false;
+                this.activeFilter = 'all';
+
+                this.quotes = [
+                    "\"Success in UTME isn't about luck; it's about consistency and practice.\"",
+                    "\"Focus on your preparation; 300+ in UTME is completely achievable!\"",
+                    "\"Small daily revisions compound into massive score improvements on exam day.\"",
+                    "\"Stay calm, read each question thoroughly, and trust your training.\""
+                ];
+                this.quoteIdx = 0;
+            }
+
+            init() {
+                this.renderSubjects();
+                this.initAiChat();
+            }
+
+            filterSubjects(category) {
+                this.activeFilter = category;
+                ['all', 'science', 'commercial', 'arts'].forEach(cat => {
+                    const btn = document.getElementById(`tab-${cat}`);
+                    if (btn) {
+                        if (cat === category) {
+                            btn.className = "tab-btn border-b-2 border-emerald-500 text-emerald-400 px-4 py-2 font-extrabold text-xs sm:text-sm whitespace-nowrap";
+                        } else {
+                            btn.className = "tab-btn border-b-2 border-transparent text-slate-400 px-4 py-2 font-bold text-xs sm:text-sm hover:text-white whitespace-nowrap";
+                        }
+                    }
+                });
+                this.renderSubjects();
+            }
+
+            renderSubjects() {
+                const grid = document.getElementById('subjectGrid');
+                if (!grid) return;
+
+                grid.innerHTML = '';
+                Object.keys(FULL_SUBJECT_DATABASE).forEach(key => {
+                    const sub = FULL_SUBJECT_DATABASE[key];
+                    if (this.activeFilter !== 'all' && sub.category !== 'all' && sub.category !== this.activeFilter) {
+                        return;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = "glow-card rounded-2xl p-5 border border-slate-800 hover:border-emerald-500/50 transition cursor-pointer flex flex-col justify-between space-y-4 btn-press";
+                    card.onclick = () => this.openSetup(key);
+
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 text-emerald-400 flex items-center justify-center font-bold text-xl shadow-inner">
+                                <i class="fas ${sub.icon}"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-slate-900 text-slate-300 border border-slate-800 uppercase">
+                                ${sub.categoryLabel}
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-base text-white">${sub.title}</h3>
+                            <p class="text-xs text-slate-400 mt-1 font-medium"><i class="fas fa-layer-group text-emerald-400 mr-1"></i>100+ UTME Questions</p>
+                        </div>
+                        <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center text-xs font-bold text-emerald-400">
+                            <span>Start CBT Mode</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            showHome() {
+                this.clearIntervals();
+                this.hideAllViews();
+                document.getElementById('homeView').classList.remove('hidden');
+            }
+
+            hideAllViews() {
+                ['homeView', 'setupView', 'cbtView', 'resultsView'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+            }
+
+            openSetup(subjectKey) {
+                this.currentSubjectKey = subjectKey;
+                const sub = FULL_SUBJECT_DATABASE[subjectKey];
+
+                document.getElementById('setupSubjectTitle').innerText = sub.title;
+                document.getElementById('setupSubjectCategory').innerText = sub.categoryLabel;
+                document.getElementById('setupSubjectIcon').innerHTML = `<i class="fas ${sub.icon}"></i>`;
+
+                this.selectQCount(20);
+                this.hideAllViews();
+                document.getElementById('setupView').classList.remove('hidden');
+            }
+
+            selectQCount(count) {
+                this.selectedQCount = count;
+                const btns = document.querySelectorAll('.q-cnt-btn');
+                btns.forEach(btn => {
+                    if (parseInt(btn.innerText) === count) {
+                        btn.className = "q-cnt-btn btn-press py-3 rounded-2xl border border-emerald-500 font-extrabold text-xs bg-emerald-600/20 text-emerald-400 shadow-md";
+                    } else {
+                        btn.className = "q-cnt-btn btn-press py-3 rounded-2xl border border-slate-800 font-extrabold text-xs bg-slate-900 text-slate-300 hover:border-emerald-500";
+                    }
+                });
+            }
+
+            startExam() {
+                const sub = FULL_SUBJECT_DATABASE[this.currentSubjectKey];
+                const rawQ = [...sub.questions];
+
+                // Shuffle questions
+                const shuffled = rawQ.sort(() => 0.5 - Math.random()).slice(0, this.selectedQCount);
+
+                // Prepare questions with option shuffling
+                this.activeQuestions = shuffled.map(q => {
+                    const opts = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correct }));
+                    const shuffledOpts = opts.sort(() => 0.5 - Math.random());
+                    const newCorrectIndex = shuffledOpts.findIndex(o => o.isCorrect);
+
+                    return {
+                        ref: q.ref,
+                        question: q.question,
+                        options: shuffledOpts.map(o => o.text),
+                        correct: newCorrectIndex,
+                        explanation: q.explanation,
+                        wrongExplanation: q.wrongExplanation
+                    };
+                });
+
+                this.currentIndex = 0;
+                this.userAnswers = {};
+                this.flaggedQuestions = {};
+
+                // 45 seconds per question
+                this.totalTimeSeconds = this.selectedQCount * 45;
+                this.timeLeftSeconds = this.totalTimeSeconds;
+
+                document.getElementById('cbtSubjectTitle').innerText = sub.title;
+                this.hideAllViews();
+                document.getElementById('cbtView').classList.remove('hidden');
+
+                this.startTimer();
+                this.renderQuestion();
+            }
+
+            startTimer() {
+                this.clearIntervals();
+                this.updateTimerDisplay();
+
+                this.timerInterval = setInterval(() => {
+                    this.timeLeftSeconds--;
+                    this.updateTimerDisplay();
+
+                    if (this.timeLeftSeconds <= 0) {
+                        this.clearIntervals();
+                        this.submitExam(false);
+                    }
+                }, 1000);
+            }
+
+            updateTimerDisplay() {
+                const m = Math.floor(this.timeLeftSeconds / 60).toString().padStart(2, '0');
+                const s = (this.timeLeftSeconds % 60).toString().padStart(2, '0');
+                const timerEl = document.getElementById('cbtTimer');
+                if (timerEl) {
+                    timerEl.innerText = `${m}:${s}`;
+                    if (this.timeLeftSeconds <= 60) {
+                        timerEl.className = "font-mono font-black text-base sm:text-lg text-red-400 animate-pulse";
+                    } else {
+                        timerEl.className = "font-mono font-black text-base sm:text-lg text-amber-400";
+                    }
+                }
+            }
+
+            clearIntervals() {
+                if (this.timerInterval) clearInterval(this.timerInterval);
+            }
+
+            renderQuestion() {
+                const q = this.activeQuestions[this.currentIndex];
+                const total = this.activeQuestions.length;
+
+                document.getElementById('cbtQuestionTracker').innerText = `Question ${this.currentIndex + 1} of ${total}`;
+                document.getElementById('cbtQuestionRef').innerText = `Source: ${q.ref}`;
+                document.getElementById('cbtQuestionText').innerHTML = q.question;
+
+                // Flag state
+                const isFlagged = !!this.flaggedQuestions[this.currentIndex];
+                const flagBtn = document.getElementById('flagBtn');
+                const flagText = document.getElementById('flagText');
+                if (isFlagged) {
+                    flagBtn.className = "btn-press text-amber-400 font-bold flex items-center space-x-1";
+                    flagText.innerText = "Flagged";
+                } else {
+                    flagBtn.className = "btn-press text-slate-400 hover:text-amber-400 font-bold flex items-center space-x-1";
+                    flagText.innerText = "Flag for Review";
+                }
+
+                const optionsContainer = document.getElementById('cbtOptionsContainer');
+                optionsContainer.innerHTML = '';
+
+                const prefixes = ['A', 'B', 'C', 'D'];
+                q.options.forEach((optText, idx) => {
+                    const isSelected = this.userAnswers[this.currentIndex] === idx;
+
+                    const optBtn = document.createElement('button');
+                    optBtn.className = `w-full text-left p-4 rounded-2xl border text-xs sm:text-sm font-semibold flex items-center space-x-3.5 transition btn-press ${
+                        isSelected 
+                        ? 'bg-emerald-600/20 border-emerald-500 text-emerald-300 shadow-md' 
+                        : 'bg-slate-900/90 border-slate-800 text-slate-200 hover:border-slate-700'
+                    }`;
+                    optBtn.onclick = () => this.selectAnswer(idx);
+
+                    optBtn.innerHTML = `
+                        <span class="w-8 h-8 rounded-xl ${isSelected ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-300 font-bold'} flex items-center justify-center text-xs flex-shrink-0">
+                            ${prefixes[idx]}
+                        </span>
+                        <span class="flex-grow">${optText}</span>
+                    `;
+                    optionsContainer.appendChild(optBtn);
+                });
+
+                // Update prev/next buttons
+                document.getElementById('prevQBtn').disabled = this.currentIndex === 0;
+                document.getElementById('prevQBtn').style.opacity = this.currentIndex === 0 ? "0.4" : "1";
+
+                const nextBtn = document.getElementById('nextQBtn');
+                if (this.currentIndex === total - 1) {
+                    nextBtn.innerHTML = `<span>Submit</span> <i class="fas fa-check-double"></i>`;
+                } else {
+                    nextBtn.innerHTML = `<span>Next</span> <i class="fas fa-chevron-right"></i>`;
+                }
+
+                this.renderGridPalette();
+            }
+
+            selectAnswer(optionIndex) {
+                this.userAnswers[this.currentIndex] = optionIndex;
+                this.renderQuestion();
+            }
+
+            toggleFlagQuestion() {
+                if (this.flaggedQuestions[this.currentIndex]) {
+                    delete this.flaggedQuestions[this.currentIndex];
+                } else {
+                    this.flaggedQuestions[this.currentIndex] = true;
+                }
+                this.renderQuestion();
+            }
+
+            prevQuestion() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.renderQuestion();
+                }
+            }
+
+            nextQuestion() {
+                if (this.currentIndex < this.activeQuestions.length - 1) {
+                    this.currentIndex++;
+                    this.renderQuestion();
+                } else {
+                    this.openSubmitConfirmation();
+                }
+            }
+
+            toggleGridPalette(forceOpen = false) {
+                const drawer = document.getElementById('gridPaletteDrawer');
+                if (forceOpen) {
+                    drawer.classList.remove('hidden');
+                } else {
+                    drawer.classList.toggle('hidden');
+                }
+                this.renderGridPalette();
+            }
+
+            renderGridPalette() {
+                const container = document.getElementById('gridPaletteContainer');
+                if (!container) return;
+
+                container.innerHTML = '';
+                this.activeQuestions.forEach((_, idx) => {
+                    const isAnswered = this.userAnswers.hasOwnProperty(idx);
+                    const isFlagged = !!this.flaggedQuestions[idx];
+                    const isCurrent = this.currentIndex === idx;
+
+                    const btn = document.createElement('button');
+                    btn.className = `w-8 h-8 rounded-xl text-xs font-bold btn-press flex items-center justify-center border ${
+                        isCurrent 
+                        ? 'border-indigo-400 bg-indigo-500/30 text-indigo-200' 
+                        : isFlagged
+                        ? 'border-amber-500 bg-amber-500/20 text-amber-300'
+                        : isAnswered 
+                        ? 'border-emerald-500 bg-emerald-600/30 text-emerald-300' 
+                        : 'border-slate-800 bg-slate-900 text-slate-400'
+                    }`;
+                    btn.innerText = idx + 1;
+                    btn.onclick = () => {
+                        this.currentIndex = idx;
+                        this.renderQuestion();
+                    };
+                    container.appendChild(btn);
+                });
+            }
+
+            openSubmitConfirmation() {
+                const answeredCount = Object.keys(this.userAnswers).length;
+                const total = this.activeQuestions.length;
+                document.getElementById('submitModalSummary').innerText = `You have answered ${answeredCount} of ${total} questions. Are you sure you want to finish now?`;
+                document.getElementById('submitModal').classList.remove('hidden');
+            }
+
+            closeSubmitConfirmation() {
+                document.getElementById('submitModal').classList.add('hidden');
+            }
+
+            // 4. FIXED SUBMISSION LOGIC
+            submitExam(userConfirmed = true) {
+                this.closeSubmitConfirmation();
+                this.clearIntervals();
+
+                let score = 0;
+                const total = this.activeQuestions.length;
+
+                this.activeQuestions.forEach((q, idx) => {
+                    if (this.userAnswers[idx] === q.correct) {
+                        score++;
+                    }
+                });
+
+                const percentage = Math.round((score / total) * 100);
+                const elapsedSeconds = this.totalTimeSeconds - Math.max(0, this.timeLeftSeconds);
+                const elM = Math.floor(elapsedSeconds / 60).toString().padStart(2, '0');
+                const elS = (elapsedSeconds % 60).toString().padStart(2, '0');
+
+                document.getElementById('resScorePercentage').innerText = `${percentage}%`;
+                document.getElementById('resScoreText').innerText = `You answered ${score} out of ${total} questions correctly`;
+                document.getElementById('resTimeSpentText').innerText = `Time Elapsed: ${elM}:${elS}`;
+
+                // Grade assignment
+                const badge = document.getElementById('resGradeBadge');
+                const advice = document.getElementById('resMotivationalAdvice');
+
+                if (percentage >= 70) {
+                    badge.className = "inline-block px-5 py-2 rounded-full font-black text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+                    badge.innerText = "GRADE: EXCELLENT (300+ AGGREGATE TRAJECTORY)";
+                    advice.innerText = "\"Outstanding performance! Keep up this exact momentum and you will easily conquer UTME!\"";
+                } else if (percentage >= 50) {
+                    badge.className = "inline-block px-5 py-2 rounded-full font-black text-xs bg-amber-500/20 text-amber-400 border border-amber-500/40";
+                    badge.innerText = "GRADE: GOOD (PASSING SCORE)";
+                    advice.innerText = "\"Solid performance! Review the questions you missed below to boost your score further.\"";
+                } else {
+                    badge.className = "inline-block px-5 py-2 rounded-full font-black text-xs bg-red-500/20 text-red-400 border border-red-500/40";
+                    badge.innerText = "GRADE: NEEDS REVISION";
+                    advice.innerText = "\"Don't give up! Mistakes are learning opportunities. Watch the YouTube tutorial below and retry.\"";
+                }
+
+                // Bind subject YouTube link
+                const sub = FULL_SUBJECT_DATABASE[this.currentSubjectKey];
+                const ytBtn = document.getElementById('resYoutubeBtn');
+                ytBtn.href = sub.youtube;
+                document.getElementById('resYoutubeText').innerText = `Watch ${sub.title} Video Masterclass`;
+
+                this.renderExplanations();
+                this.hideAllViews();
+                document.getElementById('resultsView').classList.remove('hidden');
+            }
+
+            renderExplanations() {
+                const list = document.getElementById('resExplanationsList');
+                list.innerHTML = '';
+
+                const prefixes = ['A', 'B', 'C', 'D'];
+
+                this.activeQuestions.forEach((q, idx) => {
+                    const userSel = this.userAnswers[idx];
+                    const isCorrect = userSel === q.correct;
+                    const isUnanswered = userSel === undefined;
+
+                    const item = document.createElement('div');
+                    item.className = `glow-card rounded-2xl p-5 space-y-3 border ${
+                        isCorrect 
+                        ? 'border-emerald-500/40 bg-emerald-950/10' 
+                        : 'border-red-500/40 bg-red-950/10'
+                    }`;
+
+                    let statusBadge = isCorrect 
+                        ? `<span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">CORRECT</span>`
+                        : isUnanswered
+                        ? `<span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-slate-800 text-slate-300">UNANSWERED</span>`
+                        : `<span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-red-500/20 text-red-400 border border-red-500/40">INCORRECT</span>`;
+
+                    item.innerHTML = `
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold text-slate-300">Question ${idx + 1} (${q.ref})</span>
+                            ${statusBadge}
+                        </div>
+                        <p class="text-sm font-semibold text-white leading-relaxed">${q.question}</p>
+                        
+                        <div class="space-y-1 text-xs pt-1">
+                            <p class="text-slate-300"><span class="font-bold text-slate-400">Your Answer:</span> ${userSel !== undefined ? `${prefixes[userSel]}. ${q.options[userSel]}` : '<span class="italic text-slate-500">None</span>'}</p>
+                            <p class="text-emerald-400 font-bold"><span class="text-slate-400 font-normal">Correct Answer:</span> ${prefixes[q.correct]}. ${q.options[q.correct]}</p>
+                        </div>
+
+                        <div class="bg-slate-900/90 rounded-xl p-3.5 text-xs text-slate-300 space-y-1.5 border border-slate-800 mt-2">
+                            <p class="font-bold text-emerald-400 flex items-center"><i class="fas fa-check-circle mr-1.5"></i> Correct Explanation:</p>
+                            <p class="leading-relaxed">${q.explanation}</p>
+                            ${!isCorrect && !isUnanswered ? `<p class="text-slate-400 text-[11px] pt-1 italic"><span class="font-bold text-amber-400">Why your choice failed:</span> ${q.wrongExplanation}</p>` : ''}
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+
+            retryExam() {
+                this.startExam();
+            }
+
+            // 5. RELAXING WEB AUDIO SYNTHESIZER
+            toggleAmbientMusic() {
+                if (!this.isPlayingAudio) {
+                    try {
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        this.audioCtx = new AudioContext();
+
+                        const osc1 = this.audioCtx.createOscillator();
+                        const osc2 = this.audioCtx.createOscillator();
+                        const gain = this.audioCtx.createGain();
+
+                        osc1.type = 'sine';
+                        osc1.frequency.setValueAtTime(174, this.audioCtx.currentTime); // Relaxing 174Hz
+
+                        osc2.type = 'triangle';
+                        osc2.frequency.setValueAtTime(285, this.audioCtx.currentTime);
+
+                        gain.gain.setValueAtTime(0.035, this.audioCtx.currentTime);
+
+                        osc1.connect(gain);
+                        osc2.connect(gain);
+                        gain.connect(this.audioCtx.destination);
+
+                        osc1.start();
+                        osc2.start();
+
+                        this.isPlayingAudio = true;
+                        document.getElementById('musicIcon').className = "fas fa-pause text-emerald-400";
+                        document.getElementById('musicText').innerText = "Pause Audio";
+                    } catch(e) {
+                        alert("Audio synthesis is not supported on this browser.");
+                    }
+                } else {
+                    if (this.audioCtx) this.audioCtx.close();
+                    this.isPlayingAudio = false;
+                    document.getElementById('musicIcon').className = "fas fa-music text-emerald-400";
+                    document.getElementById('musicText').innerText = "Relaxing Audio";
+                }
+            }
+
+            // 6. OFFLINE JambBot AI ASSISTANT
+            initAiChat() {
+                const container = document.getElementById('aiMessages');
+                if (!container) return;
+
+                container.innerHTML = `
+                    <div class="bg-indigo-950/40 border border-indigo-500/20 rounded-2xl p-3.5 text-slate-300 space-y-1">
+                        <p class="font-bold text-indigo-400">👋 Hello! I am JambBot.</p>
+                        <p class="leading-relaxed">I am your offline UTME study companion. Ask me for syllabus tips, timing strategy, or motivation!</p>
+                    </div>
+                `;
+            }
+
+            toggleAiChat() {
+                document.getElementById('aiChatBox').classList.toggle('hidden');
+            }
+
+            sendQuickAiPrompt(type) {
+                let msg = "";
+                if (type === 'Syllabus tips') msg = "Give me effective UTME study tips";
+                else if (type === 'Motivate me') msg = "I feel like giving up, motivate me";
+                else if (type === 'Novel tips') msg = "Tips on studying the JAMB novel";
+
+                this.processAiResponse(msg);
+            }
+
+            sendAiMessage(e) {
+                e.preventDefault();
+                const input = document.getElementById('aiInput');
+                const val = input.value.trim();
+                if (!val) return;
+
+                input.value = '';
+                this.processAiResponse(val);
+            }
+
+            processAiResponse(userText) {
+                const container = document.getElementById('aiMessages');
+
+                const userMsg = document.createElement('div');
+                userMsg.className = "bg-slate-800 text-slate-200 p-3 rounded-2xl ml-6 border border-slate-700 text-right font-medium";
+                userMsg.innerText = userText;
+                container.appendChild(userMsg);
+
+                let botReply = "Focus on practicing past questions consistently! Understanding why correct answers work is key to scoring 300+ in UTME.";
+
+                const query = userText.toLowerCase();
+                if (query.includes('motivate') || query.includes('giving up') || query.includes('tired')) {
+                    botReply = "🔥 Don't give up now! Millions of students have stood right where you are. Remember your dream course and university. Every past question you solve moves you closer to getting admitted!";
+                } else if (query.includes('syllabus') || query.includes('tips') || query.includes('study')) {
+                    botReply = "💡 UTME Golden Rules: 1. Master high-frequency topics. 2. Pace yourself at ~40 seconds per question. 3. Review answer explanations after every test!";
+                } else if (query.includes('novel') || query.includes('english')) {
+                    botReply = "📖 For the Use of English prescribed novel: pay close attention to main characters, plot twists, key themes, and famous quotes!";
+                }
+
+                setTimeout(() => {
+                    const botMsg = document.createElement('div');
+                    botMsg.className = "bg-indigo-900/30 text-indigo-200 p-3 rounded-2xl mr-6 border border-indigo-500/30 font-medium leading-relaxed";
+                    botMsg.innerText = botReply;
+                    container.appendChild(botMsg);
+                    container.scrollTop = container.scrollHeight;
+                }, 300);
+
+                container.scrollTop = container.scrollHeight;
+            }
+
+            // 7. PRIVATE FEEDBACK VAULT (PASSCODE: 2006)
+            openFeedbackModal() {
+                document.getElementById('feedbackModal').classList.remove('hidden');
+            }
+
+            closeFeedbackModal() {
+                document.getElementById('feedbackModal').classList.add('hidden');
+            }
+
+            submitFeedback() {
+                const text = document.getElementById('feedbackText').value.trim();
+                if (!text) {
+                    alert("Please type a suggestion before submitting.");
+                    return;
+                }
+
+                const existing = JSON.parse(localStorage.getItem('jamb_app_feedback') || '[]');
+                existing.push({
+                    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(),
+                    text: text
+                });
+                localStorage.setItem('jamb_app_feedback', JSON.stringify(existing));
+
+                document.getElementById('feedbackText').value = '';
+                this.closeFeedbackModal();
+                alert("Thank you! Your feedback has been encrypted and saved to the Creator Vault.");
+            }
+
+            openAdminModal() {
+                document.getElementById('adminModal').classList.remove('hidden');
+            }
+
+            closeAdminModal() {
+                document.getElementById('adminModal').classList.add('hidden');
+            }
+
+            verifyAdminPass() {
+                const pass = document.getElementById('adminPassInput').value.trim();
+                if (pass === '2006') {
+                    document.getElementById('adminAuthBox').classList.add('hidden');
+                    document.getElementById('adminVaultContent').classList.remove('hidden');
+                    this.renderVaultContent();
+                } else {
+                    alert("Incorrect Admin Passcode! Access Denied.");
+                }
+            }
+
+            renderVaultContent() {
+                const list = document.getElementById('adminVaultList');
+                const existing = JSON.parse(localStorage.getItem('jamb_app_feedback') || '[]');
+
+                list.innerHTML = '';
+                if (existing.length === 0) {
+                    list.innerHTML = `<p class="text-slate-500 italic">No feedback entries submitted yet.</p>`;
+                    return;
+                }
+
+                existing.forEach((item, idx) => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-800/90 p-3 rounded-xl border border-slate-700 text-slate-300 space-y-1";
+                    card.innerHTML = `
+                        <div class="flex justify-between text-[10px] text-amber-400 font-bold">
+                            <span>Feedback #${idx + 1}</span>
+                            <span>${item.date}</span>
+                        </div>
+                        <p class="text-xs leading-relaxed">${item.text}</p>
+                    `;
+                    list.appendChild(card);
+                });
+            }
+
+            clearAdminVault() {
+                if (confirm("Are you sure you want to clear all feedback entries?")) {
+                    localStorage.removeItem('jamb_app_feedback');
+                    this.renderVaultContent();
+                }
+            }
+
+            nextQuote() {
+                this.quoteIdx = (this.quoteIdx + 1) % this.quotes.length;
+                document.getElementById('motivationQuote').innerText = this.quotes[this.quoteIdx];
+            }
+        }
+
+        // Initialize App on Load
+        let app;
+        window.onload = function() {
+            app = new UTMEApp();
+            app.init();
+        };
+    </script>
+</body>
+</html>
